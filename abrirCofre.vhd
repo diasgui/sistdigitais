@@ -43,7 +43,7 @@ begin
        	  chaves(0 to 3) = senha_binaria(12 to 15);
           y <= d3;
         when d3 =>
-       	  if senha_binaria(0 to 15) == senha_salva(0 to 15)
+       	  if senha_binaria(0 to 15) == senha_salva(0 to 15) then
             y <= abrir;
           else
             contador <= contador + 1;
@@ -53,7 +53,7 @@ begin
           destravaPorta = '1';
        	  y <= op0;
         when erro =>
-       	  if contador > attempts
+       	  if contador <= attempts then
             y <= d0;
           else
             y <= bloqueio;
@@ -72,7 +72,7 @@ begin
        	  chaves(0 to 3) = senha_binaria(12 to 15);
           y <= m3;
         when m3 =>
-       	  if senha_binaria(0 to 15) == senha_mestre(0 to 15)
+       	  if senha_binaria(0 to 15) == senha_mestre(0 to 15) then
             y <= op0;
           else
             y <= op0; -- não sei para onde vai esse caso.
