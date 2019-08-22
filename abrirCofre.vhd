@@ -27,10 +27,10 @@ begin
   process(botaoSet)
   begin
     if botaoSet = '0' then
-    	y <= op0 -- estado inicial Op0
+    	y <= op1 -- estado inicial Op0
     else if rising_edge(botaoSet) then
       case y
-        when op0 => 
+        when op1 => 
        	  chaves(0 to 3) = senha_binaria(0 to 3);
           y <= d0;
         when d0 =>
