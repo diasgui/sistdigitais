@@ -1,27 +1,62 @@
 library IEEE;
 use IEEE.std_logic_1164.all;
+use work.senha.all;
 
--- esboço da operacao de abrir cofre
 entity abrirCofre is
   port(
-    chaves: in std_logic_vector(0 to 3);
+    chaves: in std_logic_vector(0 to 15);
     botaoSet: in std_logic;
+	tiposenha: in std_logic;
     destravaPorta: out std_logic
     );
 end entity abrirCofre;
 
 architecture comportamental of abrirCofre is
   type State_type is (op0, op1, d0, d1, d2, d3, abrir, erro, bloqueio, m0, m1, m2, m3)
-  
+  signal destravaPorta: std_logic;
   signal y: State_type
-  
-  signal senha_salva: std_logic_vector(0 to 15);
-  signal senha_mestre: std_logic_vector(0 to 15);
-  signal senha_binaria: std_logic_vector(0 to 15);
-  signal contador: integer := 1;
-  
   constant attempts : integer := 3
+  constant SENHA_MESTRE: int_array;
+  
+component Comparador
+	generic(SENHA_MESTRE : int_array:= (1, 2, 3, 4);
+			SENHA_PADRAO : int_array);
+	port (senhaDigitada: in int_array;
+		  tipoSenha: in std_logic;
+		  resultado: out std_logic
+		  );
+end component;
+
+component BCD
+	port (binario: in std_logic(0 to 3);
+		  inteiro: out integer
+		  );
+end component;		  
+
+  
+  --signal senha_salva: std_logic_vector(0 to 15);
+  --signal senha_mestre: std_logic_vector(0 to 15);
+  --signal senha_binaria: std_logic_vector(0 to 15);
+  --signal contador: integer := 1;
+  
 begin
+
+conversorD0: BCD 
+	port map ( chaves(0 to 3) => binario(0 to 3), senhaDigitada(0) => inteiro );
+
+conversorD1: BCD 
+	port map ( chaves(4 to 7) => binario(0 to 3), senhaDigitada(1) => inteiro );
+
+conversorD2: BCD 
+	port map ( chaves(8 to 11) => binario(0 to 3), senhaDigitada(2) => inteiro );
+
+conversorD3: BCD 
+	port map ( chaves(12 to 15) => binario(0 to 3), senhaDigitada(3) => inteiro );
+	
+	
+comparador: Comparador 
+	generic map ( SENHA_MESTRE => SENHA_MESTRE , SENHA_PADRAO => SENHA_PADRAO )
+	port map (senhaDigitada => senhaDigitada , tipoSenha => tipoSenha, destravaPorta => resultado );
 
   -- inicialmente a senha esta sendo digitada e armazenada em binario, necessario converter para inteiro
   process(botaoSet)

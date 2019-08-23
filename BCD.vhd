@@ -3,7 +3,7 @@ use IEEE.std_logic_1164.all;
 
 entity BCD is
 	port(
-    	binario: in std_logic_vector(3 downto 0);
+    	binario: in std_logic_vector(0 to 3);
 		inteiro: out integer
 	);
 end entity BCD;
